@@ -67,49 +67,6 @@ jobs:
           path: dist/${{ matrix.artifact }}.*
           if-no-files-found: error
 
-  macos:
-    name: macOS universal2
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v4
-      - name: Install universal2 CPython
-        shell: bash
-        env:
-          PYTHON_VERSION: '3.13.12'
-        run: |
-          pkg="$RUNNER_TEMP/python.pkg"
-          curl -fsSL --retry 3 "https://www.python.org/ftp/python/$PYTHON_VERSION/python-$PYTHON_VERSION-macos11.pkg" -o "$pkg"
-          pkgutil --check-signature "$pkg" | grep -F 'Developer ID Installer: Python Software Foundation'
-          sudo installer -pkg "$pkg" -target /
-      - name: Build and verify both architectures
-        env:
-          PYTHON: /Library/Frameworks/Python.framework/Versions/3.13/bin/python3.13
-        run: bash scripts/build-macos-universal.sh
-      - name: Start the archived app on Apple Silicon
-        run: |
-          test "$(uname -m)" = arm64
-          ditto -x -k dist/DulusBar-macos-universal2.zip "$RUNNER_TEMP/unpacked"
-          python3 scripts/smoke-build.py "$RUNNER_TEMP/unpacked/DulusBar.app/Contents/MacOS/DulusBar"
-      - uses: actions/upload-artifact@v4
-        with:
-          name: DulusBar-macos-universal2
-          path: dist/DulusBar-macos-universal2.zip
-          if-no-files-found: error
-
-  macos-intel:
-    name: Start the universal app on Intel
-    needs: macos
-    runs-on: macos-15-intel
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
-        with:
-          name: DulusBar-macos-universal2
-      - run: |
-          test "$(uname -m)" = x86_64
-          ditto -x -k DulusBar-macos-universal2.zip "$RUNNER_TEMP/unpacked"
-          python3 scripts/smoke-build.py "$RUNNER_TEMP/unpacked/DulusBar.app/Contents/MacOS/DulusBar"
-
   system-packages:
     name: Linux system packages
     runs-on: ubuntu-24.04
