@@ -263,7 +263,7 @@ artifact for your machine. The workflow runs on pull requests, pushes to
 
 | System | CPU | File inside the Actions artifact |
 | --- | --- | --- |
-| macOS 13+ | Intel x86-64 and Apple Silicon ARM64 | `DulusBar-macos-universal2.zip` |
+| macOS 13+ | Intel x86-64 and Apple Silicon ARM64 | Not built by the workflow: see *Build locally* for `DulusBar-macos-universal2.zip` |
 | Windows | Intel/AMD x86-64 | `DulusBar-windows-x86_64.zip` |
 | Windows 11 | ARM64 | `DulusBar-windows-arm64.zip` |
 | GNU/Linux desktop | Intel/AMD x86-64, glibc 2.35+ | `DulusBar-linux-x86_64.tar.gz` |
